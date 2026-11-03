@@ -31,8 +31,8 @@ plugins {
 val staticIps = Properties().apply { file("static-ips.properties").reader().use { load(it) } }
 staticIps.stringPropertyNames().forEach { rootProject.extra[it] = staticIps.getProperty(it) }
 
-val canonicalVersionCode = 1775
-val canonicalVersionName = "8.34.2"
+val canonicalVersionCode = 1
+val canonicalVersionName = "0.0.1"
 val currentHotfixVersion = 0
 val maxHotfixVersions = 100
 
@@ -249,6 +249,7 @@ android {
     }
     versionCode = (canonicalVersionCode * maxHotfixVersions) + possibleHotfixVersions[currentHotfixVersion]
     versionName = canonicalVersionName
+    applicationId = "com.msg.ping"
 
     if (isInstrumentationTestRun) {
       applicationIdSuffix = ".test_run"
@@ -258,7 +259,7 @@ android {
     targetSdk = libs.versions.targetSdk.get().toInt()
 
     vectorDrawables.useSupportLibrary = true
-    project.ext.set("archivesBaseName", "Signal")
+    project.ext.set("archivesBaseName", "Ping")
 
     manifestPlaceholders["mapsKey"] = "AIzaSyCSx9xea86GwDKGznCAULE9Y5a8b-TfN9U"
 
@@ -374,6 +375,9 @@ android {
 
     getByName("release") {
       isMinifyEnabled = true
+      // Personal build: sign the release APK with the auto-generated debug
+      // keystore so the APK is installable (upstream signs releases itself).
+      signingConfig = signingConfigs["debug"]
       proguardFiles(*buildTypes["debug"].proguardFiles.toTypedArray())
       buildConfigField("String", "BUILD_VARIANT_TYPE", "\"Release\"")
     }

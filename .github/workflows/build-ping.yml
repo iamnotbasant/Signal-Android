@@ -3,11 +3,12 @@ name: Build Ping (Signal fork)
 # Minimal personal-build workflow for the Ping rebrand branch.
 # Deliberately NOT the upstream Android CI: that workflow needs the
 # ubuntu-latest-8-cores larger runner and remote-cache secrets this fork
-# does not have. This builds one debug APK on a standard runner.
-# No secrets, no signing, no endpoint/code changes.
+# does not have. On ping-0.0.1 this builds one release APK
+# (assembleGithubProdRelease, R8 minified, debug-keystore signed)
+# on a standard runner. No secrets, no endpoint/code changes.
 on:
   push:
-    branches: [ping-rebrand-0.0.1]
+    branches: [ping-rebrand-0.0.1, ping-0.0.1]
   workflow_dispatch:
 
 permissions:
@@ -61,11 +62,11 @@ jobs:
         # for 12g; a standard runner cannot give it, hence 8g + swap.
         run: |
           chmod +x gradlew
-          ./gradlew assemblePlayProdDebug --no-daemon --max-workers=2 -x lint -Dorg.gradle.jvmargs="-Xmx8g -XX:MaxMetaspaceSize=1g"
+          ./gradlew assembleGithubProdRelease --no-daemon --max-workers=2 -x lint -Dorg.gradle.jvmargs="-Xmx8g -XX:MaxMetaspaceSize=1g"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Ping-SignalFork
-          path: app/build/outputs/apk/playProd/debug/*.apk
+          name: Ping-0.0.1
+          path: app/build/outputs/apk/githubProd/release/*.apk
           if-no-files-found: error
