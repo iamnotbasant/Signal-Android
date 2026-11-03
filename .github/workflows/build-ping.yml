@@ -61,7 +61,7 @@ jobs:
         # for 12g; a standard runner cannot give it, hence 8g + swap.
         run: |
           chmod +x gradlew
-          ./gradlew :app:assembleWebsiteProdDebug --no-daemon --max-workers=2 -x lint -Dorg.gradle.jvmargs="-Xmx8g -XX:MaxMetaspaceSize=1g"
+          ./gradlew :Signal-Android:assembleWebsiteProdDebug --no-daemon --max-workers=2 -x lint -Dorg.gradle.jvmargs="-Xmx8g -XX:MaxMetaspaceSize=1g"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
