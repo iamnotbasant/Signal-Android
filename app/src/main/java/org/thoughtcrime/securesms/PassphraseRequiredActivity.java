@@ -61,6 +61,7 @@ public abstract class PassphraseRequiredActivity extends BaseActivity implements
   private static final int STATE_RESUME_LINKING_REG  = 12;
   private static final int STATE_CLOCK_SKEW          = 13;
   private static final int STATE_RESUME_REGISTRATION = 14;
+  private static final int STATE_PING_USERNAME       = 15;
 
   private SignalServiceNetworkAccess networkAccess;
   private BroadcastReceiver          clearKeyReceiver;
@@ -152,6 +153,7 @@ public abstract class PassphraseRequiredActivity extends BaseActivity implements
       case STATE_PROMPT_PASSPHRASE:   return getPromptPassphraseIntent();
       case STATE_UI_BLOCKING_UPGRADE: return getUiBlockingUpgradeIntent();
       case STATE_WELCOME_PUSH_SCREEN: return getPushRegistrationIntent();
+      case STATE_PING_USERNAME:       return getPingUsernameIntent();
       case STATE_ENTER_SIGNAL_PIN:    return getEnterSignalPinIntent();
       case STATE_CREATE_SIGNAL_PIN:   return getCreateSignalPinIntent();
       case STATE_CREATE_PROFILE_NAME: return getCreateProfileNameIntent();
@@ -173,6 +175,8 @@ public abstract class PassphraseRequiredActivity extends BaseActivity implements
       return STATE_PROMPT_PASSPHRASE;
     } else if (ApplicationMigrations.isUpdate(this) && ApplicationMigrations.isUiBlockingMigrationRunning()) {
       return STATE_UI_BLOCKING_UPGRADE;
+    } else if (!SignalStore.account().isRegistered()) {
+      return STATE_PING_USERNAME;
     } else if (!SignalStore.registration().getHasPromptedPushRegistration()) {
       return STATE_WELCOME_PUSH_SCREEN;
     } else if (shouldResumeLinkingRegistration()) {
@@ -254,6 +258,10 @@ public abstract class PassphraseRequiredActivity extends BaseActivity implements
 
   private Intent getPushRegistrationIntent() {
     return RegistrationIntents.newIntentForNewRegistration(this);
+  }
+
+  private Intent getPingUsernameIntent() {
+    return new Intent(this, PingUsernameActivity.class);
   }
 
   private Intent getEnterSignalPinIntent() {

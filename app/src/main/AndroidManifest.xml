@@ -420,6 +420,12 @@
             android:windowSoftInputMode="stateUnchanged" />
 
         <activity
+            android:name=".PingUsernameActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Signal.DayNight.NoActionBar"
+            android:windowSoftInputMode="stateUnchanged" />
+
+        <activity
             android:name=".PassphrasePromptActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"

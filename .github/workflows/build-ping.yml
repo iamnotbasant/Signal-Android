@@ -8,7 +8,7 @@ name: Build Ping (Signal fork)
 # on a standard runner. No secrets, no endpoint/code changes.
 on:
   push:
-    branches: [ping-rebrand-0.0.1, ping-0.0.1]
+    branches: [ping-rebrand-0.0.1, ping-0.0.1, ping-0.0.2]
   workflow_dispatch:
 
 permissions:
@@ -67,6 +67,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Ping-0.0.1
+          name: Ping-0.0.2
           path: app/build/outputs/apk/githubProd/release/*.apk
           if-no-files-found: error
