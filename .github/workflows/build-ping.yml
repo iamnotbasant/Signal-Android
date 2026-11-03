@@ -61,11 +61,11 @@ jobs:
         # for 12g; a standard runner cannot give it, hence 8g + swap.
         run: |
           chmod +x gradlew
-          ./gradlew assembleWebsiteProdDebug --no-daemon --max-workers=2 -x lint -Dorg.gradle.jvmargs="-Xmx8g -XX:MaxMetaspaceSize=1g"
+          ./gradlew assemblePlayProdDebug --no-daemon --max-workers=2 -x lint -Dorg.gradle.jvmargs="-Xmx8g -XX:MaxMetaspaceSize=1g"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Ping-SignalFork
-          path: app/build/outputs/apk/websiteProd/debug/*.apk
+          path: app/build/outputs/apk/playProd/debug/*.apk
           if-no-files-found: error
