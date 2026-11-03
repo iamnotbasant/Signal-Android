@@ -1,0 +1,71 @@
+name: Build Ping (Signal fork)
+
+# Minimal personal-build workflow for the Ping rebrand branch.
+# Deliberately NOT the upstream Android CI: that workflow needs the
+# ubuntu-latest-8-cores larger runner and remote-cache secrets this fork
+# does not have. This builds one debug APK on a standard runner.
+# No secrets, no signing, no endpoint/code changes.
+on:
+  push:
+    branches: [ping-rebrand-0.0.1]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Free up disk space
+        continue-on-error: true
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/share/swift /usr/local/.ghcup /usr/local/julia* /opt/microsoft /opt/google /opt/az /usr/local/share/powershell /opt/hostedtoolcache || true
+          df -h
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          lfs: true
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install Android SDK pieces (best effort)
+        continue-on-error: true
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          yes | sdkmanager "ndk;28.0.13004108" "platforms;android-37" "build-tools;36.0.0" > /dev/null 2>&1 || true
+          ls "$ANDROID_HOME/ndk" 2>/dev/null || true
+
+      - name: Swap check (best effort, never blocks the build)
+        continue-on-error: true
+        run: |
+          free -h
+          swapon --show || true
+          if ! swapon --show 2>/dev/null | grep -q .; then
+            sudo fallocate -l 6G /mnt/extraswap || sudo dd if=/dev/zero of=/mnt/extraswap bs=1M count=6144 || true
+            sudo chmod 600 /mnt/extraswap || true
+            sudo mkswap /mnt/extraswap || true
+            sudo swapon /mnt/extraswap || true
+          fi
+          free -h
+
+      - name: Build debug APK
+        # Heap flag on the command line: GRADLE_OPTS does not reach the
+        # daemon/D8 heap (Bite CI lesson). Upstream gradle.properties asks
+        # for 12g; a standard runner cannot give it, hence 8g + swap.
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:assembleWebsiteProdDebug --no-daemon --max-workers=2 -x lint -Dorg.gradle.jvmargs="-Xmx8g -XX:MaxMetaspaceSize=1g"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ping-SignalFork
+          path: app/build/outputs/apk/websiteProd/debug/*.apk
+          if-no-files-found: error
