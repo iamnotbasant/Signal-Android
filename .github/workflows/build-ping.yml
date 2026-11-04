@@ -4,11 +4,12 @@ name: Build Ping (Signal fork)
 # Deliberately NOT the upstream Android CI: that workflow needs the
 # ubuntu-latest-8-cores larger runner and remote-cache secrets this fork
 # does not have. On ping-0.0.1 this builds one release APK
-# (assembleGithubProdRelease, R8 minified, debug-keystore signed)
-# on a standard runner. No secrets, no endpoint/code changes.
+# (assembleGithubProdRelease, R8 minified, signed with the stable Ping
+# keystore from repo secrets, so updates install over previous builds)
+# on a standard runner. Signing secret only, no endpoint/code changes.
 on:
   push:
-    branches: [ping-rebrand-0.0.1, ping-0.0.1, ping-0.0.2, ping-0.0.3]
+    branches: [ping-rebrand-0.0.1, ping-0.0.1, ping-0.0.2, ping-0.0.3, ping-0.0.4]
   workflow_dispatch:
 
 permissions:
@@ -56,6 +57,20 @@ jobs:
           fi
           free -h
 
+      - name: Restore stable Ping signing keystore
+        run: |
+          if [ -z "$PING_KEYSTORE_B64" ] || [ -z "$PING_KEYSTORE_PASSWORD" ] || [ -z "$PING_KEY_ALIAS" ] || [ -z "$PING_KEY_PASSWORD" ]; then
+            echo "Ping signing secret missing; refusing to fall back to a throwaway debug key."
+            exit 1
+          fi
+          echo "$PING_KEYSTORE_B64" | base64 --decode > "$GITHUB_WORKSPACE/ping-signing.keystore"
+          printf 'storeFile=ping-signing.keystore\nstorePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' "$PING_KEYSTORE_PASSWORD" "$PING_KEY_ALIAS" "$PING_KEY_PASSWORD" > "$GITHUB_WORKSPACE/keystore.debug.properties"
+        env:
+          PING_KEYSTORE_B64: ${{ secrets.PING_KEYSTORE_B64 }}
+          PING_KEYSTORE_PASSWORD: ${{ secrets.PING_KEYSTORE_PASSWORD }}
+          PING_KEY_ALIAS: ${{ secrets.PING_KEY_ALIAS }}
+          PING_KEY_PASSWORD: ${{ secrets.PING_KEY_PASSWORD }}
+
       - name: Build debug APK
         # Heap flag on the command line: GRADLE_OPTS does not reach the
         # daemon/D8 heap (Bite CI lesson). Upstream gradle.properties asks
@@ -67,6 +82,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Ping-0.0.3
+          name: Ping-0.0.4
           path: app/build/outputs/apk/githubProd/release/*.apk
           if-no-files-found: error

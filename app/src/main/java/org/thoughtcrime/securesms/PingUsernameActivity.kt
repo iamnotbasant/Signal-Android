@@ -44,15 +44,31 @@ import java.util.UUID
  * number. No server, no SMS code. Writes a local phone-number-less account
  * state (random ACI, generated identity key, username) and opens the main
  * UI. Messaging cannot work without a backend/account — UI testing only.
+ *
+ * This activity is the launcher entry (all RoutingActivity aliases target
+ * it), so the Signal registration flow is never the first screen. When a
+ * complete local account already exists, it forwards straight to MainActivity.
  */
 class PingUsernameActivity : ComponentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    if (hasCompletePingAccount()) {
+      startActivity(MainActivity.clearTop(this))
+      finish()
+      return
+    }
     enableEdgeToEdge()
     setContent {
       PingUsernameScreen(onNext = ::enterWithUsername)
     }
+  }
+
+  private fun hasCompletePingAccount(): Boolean {
+    val servicePassword = SignalStore.account.servicePassword
+    return SignalStore.account.isRegistered &&
+           SignalStore.account.aci != null &&
+           !servicePassword.isNullOrEmpty()
   }
 
   private fun enterWithUsername(rawUsername: String) {

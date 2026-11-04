@@ -972,7 +972,7 @@
             android:name=".RoutingActivity"
             android:exported="true"
             android:resizeableActivity="true"
-            android:targetActivity=".MainActivity">
+            android:targetActivity=".PingUsernameActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -998,7 +998,7 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_alt_yellow"
-            android:targetActivity=".MainActivity">
+            android:targetActivity=".PingUsernameActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -1024,7 +1024,7 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_alt_bubbles"
-            android:targetActivity=".MainActivity">
+            android:targetActivity=".PingUsernameActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -1050,7 +1050,7 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_alt_chat"
-            android:targetActivity=".MainActivity">
+            android:targetActivity=".PingUsernameActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -1077,7 +1077,7 @@
             android:exported="true"
             android:icon="@mipmap/ic_launcher_alt_news"
             android:label="@string/app_icon_label_news"
-            android:targetActivity=".MainActivity">
+            android:targetActivity=".PingUsernameActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -1104,7 +1104,7 @@
             android:exported="true"
             android:icon="@mipmap/ic_launcher_alt_notes"
             android:label="@string/app_icon_label_notes"
-            android:targetActivity=".MainActivity">
+            android:targetActivity=".PingUsernameActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -1130,7 +1130,7 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_alt_signal_color"
-            android:targetActivity=".MainActivity">
+            android:targetActivity=".PingUsernameActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -1156,7 +1156,7 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_alt_signal_dark"
-            android:targetActivity=".MainActivity">
+            android:targetActivity=".PingUsernameActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -1182,7 +1182,7 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_alt_signal_dark_variant"
-            android:targetActivity=".MainActivity">
+            android:targetActivity=".PingUsernameActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -1208,7 +1208,7 @@
             android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_alt_signal_white"
-            android:targetActivity=".MainActivity">
+            android:targetActivity=".PingUsernameActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -1235,7 +1235,7 @@
             android:exported="true"
             android:icon="@mipmap/ic_launcher_alt_waves"
             android:label="@string/app_icon_label_waves"
-            android:targetActivity=".MainActivity">
+            android:targetActivity=".PingUsernameActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -1262,7 +1262,7 @@
             android:exported="true"
             android:icon="@mipmap/ic_launcher_alt_weather"
             android:label="@string/app_icon_label_weather"
-            android:targetActivity=".MainActivity">
+            android:targetActivity=".PingUsernameActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
