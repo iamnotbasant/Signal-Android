@@ -168,6 +168,20 @@ public abstract class PassphraseRequiredActivity extends BaseActivity implements
     }
   }
 
+  /**
+   * Ping frontend testing: only a fully completed local account may skip the
+   * username screen. The registered flag, ACI and service password are all
+   * written together at real registration completion, so a bare registered
+   * flag without the account data means no usable account exists yet.
+   */
+  private boolean hasCompletePingAccount() {
+    String servicePassword = SignalStore.account().getServicePassword();
+    return SignalStore.account().isRegistered() &&
+           SignalStore.account().getAci() != null &&
+           servicePassword != null &&
+           !servicePassword.isEmpty();
+  }
+
   private int getApplicationState(boolean locked) {
     if (!MasterSecretUtil.isPassphraseInitialized(this)) {
       return STATE_CREATE_PASSPHRASE;
@@ -175,7 +189,7 @@ public abstract class PassphraseRequiredActivity extends BaseActivity implements
       return STATE_PROMPT_PASSPHRASE;
     } else if (ApplicationMigrations.isUpdate(this) && ApplicationMigrations.isUiBlockingMigrationRunning()) {
       return STATE_UI_BLOCKING_UPGRADE;
-    } else if (!SignalStore.account().isRegistered()) {
+    } else if (!hasCompletePingAccount()) {
       return STATE_PING_USERNAME;
     } else if (!SignalStore.registration().getHasPromptedPushRegistration()) {
       return STATE_WELCOME_PUSH_SCREEN;
