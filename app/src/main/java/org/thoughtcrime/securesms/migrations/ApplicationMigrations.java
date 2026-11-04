@@ -1032,7 +1032,12 @@ public class ApplicationMigrations {
     return jobs;
   }
 
+  // Ping: legacy-update detection disabled. Ping's own version codes (101/201/301/401)
+  // are all below LEGACY_CANONICAL_VERSION (455), so every update was treated as a
+  // legacy upgrade, the migration version was reset to 0, and the full migration
+  // suite re-ran behind the "Signal is updating..." screen on every update.
+  // Ping installs are fresh 2026 installs; no legacy migration is ever needed.
   private static boolean isLegacyUpdate(@NonNull Context context) {
-    return VersionTracker.getLastSeenVersion() < LEGACY_CANONICAL_VERSION;
+    return false;
   }
 }
